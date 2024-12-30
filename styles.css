@@ -1,0 +1,621 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: "Courier New", monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.game-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  max-height: 90vh;
+}
+
+/* 左パネル */
+.left-panel {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.minimap-container,
+.status-container {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+h3 {
+  margin: 0 0 15px 0;
+  color: #4a9eff;
+  font-size: 1.2em;
+  border-bottom: 2px solid #4a9eff;
+  padding-bottom: 8px;
+}
+
+.minimap {
+  background-color: #000;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.status-item {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-label {
+  min-width: 80px;
+  font-weight: bold;
+  color: #aaa;
+}
+
+.status-value {
+  color: #fff;
+  font-size: 1.1em;
+}
+
+.gauge-container {
+  flex-grow: 1;
+  height: 20px;
+  background-color: #444;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  min-width: 150px;
+}
+
+.gauge {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.hp-gauge {
+  background-color: #ff4444;
+}
+
+.exp-gauge {
+  background-color: #4444ff;
+}
+
+.gauge-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  line-height: 20px;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-size: 0.9em;
+}
+
+/* 中央パネル */
+.center-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.game-map {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 20px;
+  height: fit-content;
+}
+
+.game-map table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  table-layout: fixed;
+}
+
+.tile {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 20px;
+  border: 1px solid #444;
+}
+
+.hidden {
+  background-color: #111;
+  color: transparent;
+}
+
+.fog {
+  color: #666;
+}
+
+.out-of-bounds {
+  background-color: #000;
+  border-color: #222;
+}
+
+.controls {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.control-row {
+  display: flex;
+  gap: 5px;
+}
+
+.arrow-button,
+.wait-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #555;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.arrow-button:hover,
+.wait-button:hover {
+  background-color: #666;
+}
+
+.arrow-button:active,
+.wait-button:active {
+  background-color: #444;
+}
+
+.wait-button {
+  background-color: #666;
+}
+
+.invisible {
+  width: 40px;
+}
+
+/* ボタンのアクティブ状態 */
+.arrow-button:active,
+.wait-button:active {
+  transform: scale(0.95);
+}
+
+/* テンキー風のレイアウトのための追加スタイル */
+.wait-button-center {
+  position: relative;
+}
+
+.wait-button-center::after {
+  content: "待機";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8em;
+  white-space: nowrap;
+  color: #aaa;
+}
+
+.controls button:nth-child(1) {
+  grid-column: 2;
+}
+.controls button:nth-child(2) {
+  grid-column: 2;
+}
+.controls button:nth-child(3) {
+  grid-column: 1;
+  grid-row: 2;
+}
+.controls button:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+/* 右パネル */
+.right-panel {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.log-container {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-log {
+  height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+  font-size: 0.9em;
+  line-height: 1.4;
+  flex-grow: 1;
+}
+
+.message-log div {
+  padding: 4px 8px;
+  border-bottom: 1px solid #333;
+}
+
+.message-log div:last-child {
+  border-bottom: none;
+}
+
+/* ミニマップ用のタイル */
+.minimap .tile {
+  width: 12px;
+  height: 12px;
+  font-size: 10px;
+  display: inline-block;
+}
+
+/* スクロールバーのカスタマイズ */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #222;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@keyframes gameOverFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes gameOverGlow {
+  0% {
+    text-shadow: 0 0 10px #ff0000;
+    box-shadow: 0 0 10px #ff0000;
+  }
+  50% {
+    text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000;
+    box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000;
+  }
+  100% {
+    text-shadow: 0 0 10px #ff0000;
+    box-shadow: 0 0 10px #ff0000;
+  }
+}
+
+.game-over-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 30px 60px;
+  border: 3px solid #ff0000;
+  border-radius: 15px;
+  z-index: 100;
+  text-align: center;
+  animation: gameOverFadeIn 0.5s ease-out;
+}
+
+.game-over-text {
+  color: #ff0000;
+  font-size: 48px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-family: "Arial Black", sans-serif;
+  margin-bottom: 30px;
+  animation: gameOverGlow 2s infinite;
+}
+
+.retry-button {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Arial Black", sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.retry-button:hover {
+  background-color: #ff3333;
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+}
+
+.retry-button:active {
+  transform: scale(0.95);
+}
+
+/* スクロールバーのスタイル（Webkit系ブラウザ用） */
+.message-log::-webkit-scrollbar {
+  width: 8px;
+}
+
+.message-log::-webkit-scrollbar-track {
+  background: #222;
+  border-radius: 4px;
+}
+
+.message-log::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 4px;
+}
+
+.message-log::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* Firefox用のスクロールバースタイル */
+.message-log {
+  scrollbar-width: thin;
+  scrollbar-color: #666 #222;
+}
+
+.game-clear-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #2c3e50, #3498db);
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  border: 3px solid #ffd700;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  animation: fadeIn 0.8s ease-out;
+  z-index: 1000;
+  min-width: 400px;
+  pointer-events: auto;
+}
+
+.game-clear-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+.game-clear-text {
+  font-size: 48px;
+  margin-bottom: 30px;
+  line-height: 1.2;
+}
+
+.game-clear-text span {
+  display: inline-block;
+  animation: rainbow 4s infinite;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* 文字ごとにアニメーションの遅延を設定 */
+.game-clear-text span:nth-child(1) {
+  animation-delay: 0s;
+}
+.game-clear-text span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.game-clear-text span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.game-clear-text span:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.game-clear-text span:nth-child(5) {
+  animation-delay: 0.4s;
+}
+.game-clear-text span:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+.clear-stats {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  color: #fff;
+  font-size: 20px;
+}
+
+.stat-value {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.retry-button {
+  background: linear-gradient(45deg, #f1c40f, #e67e22);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #e67e22, #f1c40f);
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  animation: sparkleAnim 2s infinite linear;
+}
+
+/* キラキラエフェクトのアニメーション */
+@keyframes sparkleAnim {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 虹色のテキストアニメーション */
+@keyframes rainbow {
+  0% {
+    color: #ff0000;
+  }
+  20% {
+    color: #ffd700;
+  }
+  40% {
+    color: #00ff00;
+  }
+  60% {
+    color: #00ffff;
+  }
+  80% {
+    color: #ff00ff;
+  }
+  100% {
+    color: #ff0000;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* キラキラの位置を個別に設定 */
+.sparkle:nth-child(1) {
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+.sparkle:nth-child(2) {
+  top: 20%;
+  right: 10%;
+  animation-delay: 0.2s;
+}
+.sparkle:nth-child(3) {
+  bottom: 10%;
+  left: 20%;
+  animation-delay: 0.4s;
+}
+.sparkle:nth-child(4) {
+  bottom: 20%;
+  right: 20%;
+  animation-delay: 0.6s;
+}
+.sparkle:nth-child(5) {
+  top: 50%;
+  left: 5%;
+  animation-delay: 0.8s;
+}
+.sparkle:nth-child(6) {
+  top: 50%;
+  right: 5%;
+  animation-delay: 1s;
+}
+.sparkle:nth-child(7) {
+  top: 5%;
+  left: 50%;
+  animation-delay: 1.2s;
+}
+.sparkle:nth-child(8) {
+  bottom: 5%;
+  left: 50%;
+  animation-delay: 1.4s;
+}
+.sparkle:nth-child(9) {
+  top: 15%;
+  left: 30%;
+  animation-delay: 1.6s;
+}
+.sparkle:nth-child(10) {
+  bottom: 15%;
+  right: 30%;
+  animation-delay: 1.8s;
+}
+.sparkle:nth-child(11) {
+  top: 30%;
+  left: 15%;
+  animation-delay: 2s;
+}
+.sparkle:nth-child(12) {
+  bottom: 30%;
+  right: 15%;
+  animation-delay: 2.2s;
+}
