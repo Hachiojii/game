@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>ローグライクゲーム</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <!-- 左側：ステータスエリア -->
+      <div class="left-panel">
+        <div class="minimap-container">
+          <h3>ダンジョンマップ</h3>
+          <div class="minimap" id="minimap"></div>
+        </div>
+        <div class="status-container">
+          <h3>ステータス</h3>
+          <div class="status-item">
+            <span class="status-label">レベル:</span>
+            <span id="level">1</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">経験値:</span>
+            <div class="gauge-container">
+              <div id="exp-gauge" class="gauge exp-gauge"></div>
+              <div class="gauge-text">
+                <span id="exp">0</span>/<span id="next-exp">10</span>
+              </div>
+            </div>
+          </div>
+          <div class="status-item">
+            <span class="status-label">階層</span>
+            <span class="status-value" id="floor">1</span>F
+          </div>
+          <div class="status-item">
+            <span class="status-label">HP</span>
+            <div class="gauge-container">
+              <div class="gauge hp-gauge" id="hp-gauge"></div>
+              <span class="gauge-text">
+                <span id="hp">20</span>/<span id="maxhp">20</span>
+              </span>
+            </div>
+          </div>
+          <div class="status-item">
+            <span class="status-label">攻撃力</span>
+            <span class="status-value" id="attack">5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 中央：メインゲーム画面 -->
+      <div class="center-panel">
+        <div id="game-map" class="game-map"></div>
+      </div>
+
+      <!-- 右側：ログエリア -->
+      <div class="right-panel">
+        <div class="log-container">
+          <h3>メッセージログ</h3>
+          <div class="message-log" id="message-log">ゲーム開始！</div>
+        </div>
+        <div class="controls">
+          <div class="control-row">
+            <button class="invisible"></button>
+            <button onclick="movePlayer('ArrowUp')" class="arrow-button">
+              ↑
+            </button>
+            <button class="invisible"></button>
+          </div>
+          <div class="control-row">
+            <button onclick="movePlayer('ArrowLeft')" class="arrow-button">
+              ←
+            </button>
+            <button onclick="movePlayer('Wait')" class="wait-button">・</button>
+            <button onclick="movePlayer('ArrowRight')" class="arrow-button">
+              →
+            </button>
+          </div>
+          <div class="control-row">
+            <button class="invisible"></button>
+            <button onclick="movePlayer('ArrowDown')" class="arrow-button">
+              ↓
+            </button>
+            <button class="invisible"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>
