@@ -289,12 +289,10 @@ class Game {
 
   updateDisplay() {
     const mapDiv = document.getElementById("game-map");
-    const minimapDiv = document.getElementById("minimap");
     mapDiv.innerHTML = "";
-    minimapDiv.innerHTML = "";
 
     // カメラの表示範囲を設定
-    const viewRange = 6; // プレイヤーの位置から上下左右に6マス
+    const viewRange = 6;
     const table = document.createElement("table");
 
     // プレイヤーを中心とした表示範囲の計算
@@ -376,29 +374,6 @@ class Game {
       table.appendChild(tr);
     }
     mapDiv.appendChild(table);
-
-    // ミニマップの描画（探索済みの部分のみ表示）
-    const minimapTable = document.createElement("table");
-    for (let y = 0; y < this.mapSize; y++) {
-      const tr = document.createElement("tr");
-      for (let x = 0; x < this.mapSize; x++) {
-        const td = document.createElement("td");
-        const tileKey = `${x},${y},${this.currentFloor}`;
-
-        if (this.discoveredTiles.has(tileKey)) {
-          td.textContent = this.currentMap[y][x];
-          if (x === this.player.x && y === this.player.y) {
-            td.style.color = "#ff0";
-          }
-        } else {
-          td.textContent = " ";
-          td.classList.add("hidden");
-        }
-        tr.appendChild(td);
-      }
-      minimapTable.appendChild(tr);
-    }
-    minimapDiv.appendChild(minimapTable);
 
     // ステータス表示の更新
     document.getElementById("level").textContent = this.player.level;
