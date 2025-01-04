@@ -4,16 +4,24 @@
     <meta charset="UTF-8" />
     <title>ローグライクゲーム</title>
     <link rel="stylesheet" href="styles.css" />
-    <script defer src="game.js"></script>
   </head>
   <body>
     <div class="game-container">
-      <!-- 左側：ステータスエリア -->
+      <!-- 左側：メッセージログエリア -->
       <div class="left-panel">
-        <div class="minimap-container">
-          <h3>ダンジョンマップ</h3>
-          <div class="minimap" id="minimap"></div>
+        <div class="log-container">
+          <h3>メッセージログ</h3>
+          <div class="message-log" id="message-log">ゲーム開始！</div>
         </div>
+      </div>
+
+      <!-- 中央：メインゲーム画面 -->
+      <div class="center-panel">
+        <div id="game-map" class="game-map"></div>
+      </div>
+
+      <!-- 右側：ステータスエリア -->
+      <div class="right-panel">
         <div class="status-container">
           <h3>ステータス</h3>
           <div class="status-item">
@@ -47,19 +55,6 @@
             <span class="status-value" id="attack">5</span>
           </div>
         </div>
-      </div>
-
-      <!-- 中央：メインゲーム画面 -->
-      <div class="center-panel">
-        <div id="game-map" class="game-map"></div>
-      </div>
-
-      <!-- 右側：ログエリア -->
-      <div class="right-panel">
-        <div class="log-container">
-          <h3>メッセージログ</h3>
-          <div class="message-log" id="message-log">ゲーム開始！</div>
-        </div>
         <div class="controls">
           <div class="control-row">
             <button class="invisible"></button>
@@ -87,5 +82,6 @@
         </div>
       </div>
     </div>
+    <script src="game.js"></script>
   </body>
 </html>
