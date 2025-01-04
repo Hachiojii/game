@@ -25,6 +25,7 @@ body {
   gap: 20px;
   min-width: 250px;
   max-width: 300px;
+  height: fit-content;
 }
 
 .minimap-container,
@@ -32,7 +33,7 @@ body {
   background-color: #333;
   border-radius: 8px;
   padding: 10px;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 h3 {
@@ -112,12 +113,16 @@ h3 {
   border-radius: 8px;
   padding: 20px;
   height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-map table {
   border-collapse: collapse;
   margin: 0 auto;
   table-layout: fixed;
+  vertical-align: middle;
 }
 
 .tile {
@@ -127,6 +132,18 @@ h3 {
   font-family: monospace;
   font-size: 20px;
   border: 1px solid #444;
+  line-height: 30px;
+  vertical-align: middle;
+  padding: 0;
+}
+
+.tile span,
+.tile div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 .hidden {
@@ -149,8 +166,7 @@ h3 {
   padding: 15px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 5px;
+  gap: 10px;
 }
 
 .control-row {
@@ -235,7 +251,7 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  height: 100%;
+  height: fit-content;
 }
 
 .log-container {
@@ -248,7 +264,7 @@ h3 {
 }
 
 .message-log {
-  height: 300px;
+  height: 200px;
   overflow-y: auto;
   padding-right: 10px;
   font-size: 0.9em;
@@ -618,4 +634,19 @@ h3 {
   bottom: 30%;
   right: 15%;
   animation-delay: 2.2s;
+}
+
+/* メッセージの色分け */
+.positive-message {
+  color: #4a9eff; /* 青色 */
+}
+
+.negative-message {
+  color: #ff4444; /* 赤色 */
+}
+
+/* 通常のメッセージは白のまま */
+.message-log div {
+  padding: 4px 8px;
+  border-bottom: 1px solid #333;
 }
