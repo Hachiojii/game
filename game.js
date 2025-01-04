@@ -18,6 +18,20 @@ class Enemy {
   }
 }
 
+class NPC {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.type = "ハチおじ";
+    this.char = "〇";
+    this.color = "#ffff44";
+  }
+
+  talk() {
+    return "遊んでくれてありがとう！";
+  }
+}
+
 class Item {
   constructor(x, y, type) {
     this.x = x;
@@ -29,13 +43,13 @@ class Item {
         char: "p",
         color: "#44ff44",
         effect: "heal",
-        value: 15, // 回復量を増加
+        value: 15,
       },
       経験値の結晶: {
         char: "e",
         color: "#ffff44",
         effect: "exp",
-        value: 5, // 基本経験値
+        value: 5,
       },
     };
 
@@ -67,6 +81,7 @@ class Game {
       attack: 5,
       nextExp: 10,
     };
+    this.npcs = [];
     this.generateMaps();
     this.currentMap = this.maps[0];
     this.player.x = this.startPositions[0].x;
@@ -213,55 +228,57 @@ class Game {
 
   // 敵とアイテムの配置
   generateEntities(floor, map, startX, startY, goalX, goalY) {
-    const floorEnemies = [];
-    const floorItems = [];
-    const availableTiles = [];
+    const enemies = [];
+    const items = [];
 
-    // 利用可能なタイルのリストを作成
+    // 通行可能なタイルの収集
+    const availableTiles = [];
     for (let y = 1; y < this.mapSize - 1; y++) {
       for (let x = 1; x < this.mapSize - 1; x++) {
         if (
           map[y][x] === "." &&
-          (x !== startX || y !== startY) &&
-          (x !== goalX || y !== goalY)
+          !(x === startX && y === startY) &&
+          !(x === goalX && y === goalY)
         ) {
           availableTiles.push({ x, y });
         }
       }
     }
 
-    // 配置位置をシャッフル
-    for (let i = availableTiles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [availableTiles[i], availableTiles[j]] = [
-        availableTiles[j],
-        availableTiles[i],
-      ];
-    }
+    // 通常の敵の生成
+    const enemyCount = Math.floor(Math.random() * 3) + 3; // 3-5体
+    for (let i = 0; i < enemyCount; i++) {
+      if (availableTiles.length === 0) break;
 
-    // 敵の配置
-    const enemyTypes = ["スライム", "コウモリ", "オーク"];
-    for (let i = 0; i < 5 && availableTiles.length > 0; i++) {
-      const pos = availableTiles.pop();
-      const enemyType =
+      const randomIndex = Math.floor(Math.random() * availableTiles.length);
+      const position = availableTiles[randomIndex];
+
+      const enemyTypes = ["スライム", "コウモリ", "オーク"];
+      const randomType =
         enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-      floorEnemies.push(new Enemy(pos.x, pos.y, enemyType));
+
+      enemies.push(new Enemy(position.x, position.y, randomType));
+      availableTiles.splice(randomIndex, 1);
     }
 
-    // ポーションの配置
-    for (let i = 0; i < 2 && availableTiles.length > 0; i++) {
-      const pos = availableTiles.pop();
-      floorItems.push(new Item(pos.x, pos.y, "ポーション"));
+    // アイテムの生成
+    const itemCount = Math.floor(Math.random() * 2) + 2; // 2-3個
+    for (let i = 0; i < itemCount; i++) {
+      if (availableTiles.length === 0) break;
+
+      const randomIndex = Math.floor(Math.random() * availableTiles.length);
+      const position = availableTiles[randomIndex];
+
+      const itemTypes = ["ポーション", "経験値の結晶"];
+      const randomType =
+        itemTypes[Math.floor(Math.random() * itemTypes.length)];
+
+      items.push(new Item(position.x, position.y, randomType));
+      availableTiles.splice(randomIndex, 1);
     }
 
-    // 経験値の結晶の配置（70%の確率）
-    if (Math.random() < 0.7 && availableTiles.length > 0) {
-      const pos = availableTiles.pop();
-      floorItems.push(new Item(pos.x, pos.y, "経験値の結晶"));
-    }
-
-    this.enemies.push(floorEnemies);
-    this.items.push(floorItems);
+    this.enemies[floor] = enemies;
+    this.items[floor] = items;
   }
 
   isVisible(x, y) {
@@ -422,13 +439,50 @@ class Game {
     } else if (this.gameClear) {
       this.showGameClear();
     }
+
+    // NPCの描画を追加
+    this.npcs[this.currentFloor - 1]?.forEach((npc) => {
+      if (this.isVisible(npc.x, npc.y)) {
+        const cell = document.querySelector(
+          `#game-map tr:nth-child(${npc.y + 1}) td:nth-child(${npc.x + 1})`
+        );
+        if (cell) {
+          cell.style.color = npc.color;
+          cell.textContent = npc.char;
+        }
+      }
+    });
   }
 
   addMessage(message) {
     const messageLog = document.getElementById("message-log");
-    messageLog.innerHTML = message + "<br>" + messageLog.innerHTML;
+    let messageClass = "";
 
-    // 最新のメッセージが見えるように自動スクロール
+    // ポジティブなメッセージの判定
+    if (
+      message.includes("倒した") ||
+      message.includes("レベルアップ") ||
+      message.includes("回復") ||
+      message.includes("経験値") ||
+      message.includes("クリア") ||
+      message.includes("階に降りた")
+    ) {
+      messageClass = "positive-message";
+    }
+    // ネガティブなメッセージの判定
+    else if (
+      message.includes("ダメージ") ||
+      message.includes("攻撃") ||
+      message.includes("ゲームオーバー")
+    ) {
+      messageClass = "negative-message";
+    }
+
+    const messageElement = document.createElement("div");
+    messageElement.className = messageClass;
+    messageElement.textContent = message;
+
+    messageLog.insertBefore(messageElement, messageLog.firstChild);
     messageLog.scrollTop = 0;
   }
 
@@ -499,7 +553,11 @@ class Game {
   moveEnemies() {
     if (this.gameOver) return;
 
-    this.enemies[this.currentFloor - 1].forEach((enemy) => {
+    const currentEnemies = this.enemies[this.currentFloor - 1];
+    for (let enemy of currentEnemies) {
+      // ハチおじは移動しない
+      if (enemy.isNeutral) continue;
+
       // プレイヤーとの距離を計算
       const dx = Math.abs(enemy.x - this.player.x);
       const dy = Math.abs(enemy.y - this.player.y);
@@ -518,7 +576,7 @@ class Game {
         // それ以外はランダム移動
         this.moveEnemyRandomly(enemy);
       }
-    });
+    }
   }
 
   // プレイヤーを追跡する移動
@@ -831,6 +889,22 @@ class Game {
     clearContainer.appendChild(statsDiv);
     clearContainer.appendChild(retryButton);
     mapDiv.appendChild(clearContainer);
+  }
+
+  attackEnemy(enemy) {
+    enemy.hp -= this.player.attack;
+    this.addMessage(`${enemy.type}に${this.player.attack}のダメージを与えた！`);
+
+    if (enemy.hp <= 0) {
+      const exp = Math.floor(Math.random() * 3) + 3;
+      this.addExp(exp);
+      this.addMessage(`${enemy.type}を倒した！${exp}の経験値を獲得！`);
+
+      const index = this.enemies[this.currentFloor - 1].indexOf(enemy);
+      if (index > -1) {
+        this.enemies[this.currentFloor - 1].splice(index, 1);
+      }
+    }
   }
 }
 
